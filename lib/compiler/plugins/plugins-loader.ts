@@ -50,7 +50,12 @@ export class PluginsLoader {
     };
 
     pluginRefs.forEach((plugin, index) => {
-      if (!plugin.before && !plugin.after && !plugin.afterDeclarations) {
+      if (
+        !plugin.before &&
+        !plugin.after &&
+        !plugin.afterDeclarations &&
+        !plugin.ReadonlyVisitor
+      ) {
         throw new Error(CLI_ERRORS.WRONG_PLUGIN(pluginNames[index]));
       }
       const options =
@@ -82,7 +87,7 @@ export class PluginsLoader {
           ...extras,
           readonly: true,
         });
-        instance.key = pluginNames[index];
+        instance.key ||= pluginNames[index];
         multiCompilerPlugins.readonlyVisitors.push(instance);
       }
     });

@@ -10,7 +10,10 @@ export class BuildCommand extends AbstractCommand {
       .option('-c, --config [path]', 'Path to nest-cli configuration file.')
       .option('-p, --path [path]', 'Path to tsconfig file.')
       .option('-w, --watch', 'Run in watch mode (live-reload).')
-      .option('-b, --builder [name]', 'Builder to be used (tsc, webpack, swc).')
+      .option(
+        '-b, --builder [name]',
+        'Builder to be used (tsc, tsgo, webpack, swc).',
+      )
       .option('--watchAssets', 'Watch non-ts (e.g., .graphql) files mode.')
       .option(
         '--webpack',
@@ -46,7 +49,7 @@ export class BuildCommand extends AbstractCommand {
           value: command.webpackPath,
         });
 
-        const availableBuilders = ['tsc', 'webpack', 'swc'];
+        const availableBuilders = ['tsc', 'tsgo', 'webpack', 'swc'];
         if (command.builder && !availableBuilders.includes(command.builder)) {
           console.error(
             ERROR_PREFIX +

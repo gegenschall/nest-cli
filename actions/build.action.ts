@@ -135,7 +135,7 @@ export class BuildAction extends AbstractAction {
         'typeCheck',
         commandOptions,
       );
-      if (typeCheck && builder.type !== 'swc') {
+      if (typeCheck && builder.type !== 'swc' && builder.type !== 'tsgo') {
         console.warn(
           INFO_PREFIX +
             ` "typeCheck" will not have any effect when "builder" is not "swc".`,
@@ -166,6 +166,17 @@ export class BuildAction extends AbstractAction {
           break;
         case 'swc':
           await this.runSwc(
+            configuration,
+            appName,
+            pathToTsconfig,
+            watchMode,
+            commandOptions,
+            tsOptions,
+            onSuccess,
+          );
+          break;
+        case 'tsgo':
+          await this.runTsgo(
             configuration,
             appName,
             pathToTsconfig,
@@ -244,6 +255,44 @@ export class BuildAction extends AbstractAction {
         debug,
         watchMode,
         assetsManager: this.assetsManager,
+      },
+      onSuccess,
+    );
+  }
+
+  private async runTsgo(
+    configuration: Required<Configuration>,
+    appName: string | undefined,
+    pathToTsconfig: string,
+    watchMode: boolean,
+    options: Input[],
+    tsOptions: ts.CompilerOptions,
+    onSuccess: (() => void) | undefined,
+  ) {
+    const { TsgoCompiler } = await import('../lib/compiler/tsgo/tsgo-compiler');
+    const tsgo = new TsgoCompiler(
+      this.pluginsLoader,
+      this.tsConfigProvider,
+      this.tsLoader,
+    );
+
+    await tsgo.run(
+      configuration,
+      pathToTsconfig,
+      appName,
+      {
+        watch: watchMode,
+        tsOptions,
+        assetsManager: this.assetsManager,
+        fallbackToTsc: () =>
+          this.runTsc(
+            watchMode,
+            options,
+            configuration,
+            pathToTsconfig,
+            appName,
+            onSuccess,
+          ),
       },
       onSuccess,
     );

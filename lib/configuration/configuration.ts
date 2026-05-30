@@ -35,7 +35,12 @@ export interface TscBuilderOptions {
   configPath?: string;
 }
 
-export type BuilderVariant = 'tsc' | 'swc' | 'webpack';
+export interface TsgoBuilderOptions {
+  configPath?: string;
+  forcePlugins?: boolean;
+}
+
+export type BuilderVariant = 'tsc' | 'swc' | 'webpack' | 'tsgo';
 export type Builder =
   | BuilderVariant
   | {
@@ -49,6 +54,10 @@ export type Builder =
   | {
       type: 'tsc';
       options?: TscBuilderOptions;
+    }
+  | {
+      type: 'tsgo';
+      options?: TsgoBuilderOptions;
     };
 
 export interface CompilerOptions {

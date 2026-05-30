@@ -33,7 +33,8 @@ export function getTscConfigPath(
   );
 
   tsconfigPath =
-    typeof builder === 'object' && builder?.type === 'tsc'
+    typeof builder === 'object' &&
+    (builder?.type === 'tsc' || builder?.type === 'tsgo')
       ? builder.options?.configPath
       : undefined;
 
